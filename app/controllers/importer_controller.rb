@@ -31,7 +31,8 @@ class ImporterController < ApplicationController
     # Delete existing iip to ensure there can't be two iips for a user
     ImportInProgress.delete_all(["user_id = ?",User.current.id])
     # save import-in-progress data
-    iip = ImportInProgress.find_or_create_by_user_id(User.current.id)
+    # iip = ImportInProgress.find_or_create_by_user_id(User.current.id)
+    iip = ImportInProgress.where(user_id: User.current.id).first_or_create
     iip.quote_char = params[:wrapper]
     iip.col_sep = params[:splitter]
     iip.encoding = params[:encoding]
@@ -85,7 +86,8 @@ class ImporterController < ApplicationController
           flash[:warning] = "Column name empty error"
         end
         # header encoding
-        @headers[num].to_s.force_encoding("utf-8")
+        # @headers[num].to_s.force_encoding("utf-8") 
+        @headers[num].to_s.dup
       end
     end
 
@@ -299,7 +301,7 @@ class ImporterController < ApplicationController
       end
 
       begin
-        row.each{|k,v| row[k] = v.unpack('U*').pack('U*') if v.kind_of?(String)}
+        row.each{|k,v| row[k.unpack('U*').pack('U*')] = v.unpack('U*').pack('U*') if v.kind_of?(String)}
 
         tracker = Tracker.find_by_name(row[attrs_map["tracker"]])
         status = IssueStatus.find_by_name(row[attrs_map["status"]])

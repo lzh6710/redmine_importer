@@ -1,4 +1,4 @@
-Redmine Issue Importer plugin for Rails 3.x
+Redmine Issue Importer plugin for Rails 3.3
 ================
 
 Redmine Importer allows importing issues in bulk from .csv files. Fields will default to name-based mapping but can be overridden at the confirmation screen. Existing issues can be updated, and issue relationships and custom fields are supported.
